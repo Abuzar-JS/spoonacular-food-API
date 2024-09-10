@@ -55,9 +55,9 @@ func NewCreateUser(
 
 		userCreated, err := UserRepo.Save(ctx, userRequest)
 		if err != nil {
-			return nil, fmt.Errorf("user creation failed")
-
+			return nil, fmt.Errorf("user creation failed Why")
 		}
+		
 		return &userCreated, nil
 	}
 }
