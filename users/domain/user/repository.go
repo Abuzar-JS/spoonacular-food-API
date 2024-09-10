@@ -3,7 +3,7 @@ package user
 import (
 	"context"
 
-	"github.com/Abuzar-JS/spoonacular-food-API/users/domain"
+	"github.com/Abuzar-JS/go-spoonacular-api/users/domain"
 )
 
 type Repository interface {

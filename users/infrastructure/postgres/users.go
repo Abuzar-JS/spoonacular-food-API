@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Abuzar-JS/spoonacular-food-API/users/domain"
+	"github.com/Abuzar-JS/go-spoonacular-api/users/domain"
 
 	"gorm.io/gorm"
 )

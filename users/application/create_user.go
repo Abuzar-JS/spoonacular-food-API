@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Abuzar-JS/spoonacular-food-API/pkg/helper"
-	"github.com/Abuzar-JS/spoonacular-food-API/users/domain"
-	"github.com/Abuzar-JS/spoonacular-food-API/users/domain/user"
+	"github.com/Abuzar-JS/go-spoonacular-api/pkg/helper"
+	"github.com/Abuzar-JS/go-spoonacular-api/users/domain"
+	"github.com/Abuzar-JS/go-spoonacular-api/users/domain/user"
 )
 
 type CreateUserRequest struct {
