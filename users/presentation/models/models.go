@@ -2,6 +2,6 @@ package models
 
 type CreateUserRequest struct {
 	Name     string `json:"name"`
-	Location string `json:"location"`
+	Cuisine  string `json:"cuisine"`
 	Password string `json:"password"`
 }

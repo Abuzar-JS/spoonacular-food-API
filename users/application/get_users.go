@@ -22,10 +22,9 @@ func NewGetUsers(
 
 		for _, value := range result {
 			User := domain.User{
-				ID:       value.ID,
-				Name:     value.Name,
-				Location: value.Location,
-				Password: value.Password,
+				ID:      value.ID,
+				Name:    value.Name,
+				Cuisine: value.Cuisine,
 			}
 			AllUsers = append(AllUsers, User)
 		}

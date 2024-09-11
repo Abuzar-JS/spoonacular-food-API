@@ -3,6 +3,6 @@ package domain
 type User struct {
 	ID       int
 	Name     string
-	Location string
+	Cuisine  string
 	Password string
 }
