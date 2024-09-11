@@ -12,6 +12,7 @@ type Repository interface {
 }
 
 type ReadRepository interface {
+	GetAll() ([]domain.User, error)
 }
 
 type WriteRepository interface {

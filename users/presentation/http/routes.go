@@ -19,5 +19,9 @@ func RegisterRoutes(router *gin.Engine, database *gorm.DB, validate *validator.V
 		application.NewCreateUser(userRepo),
 	))
 
+	userRouter.GET("/users", NewGetUsers(
+		application.NewGetUsers(userRepo),
+	))
+
 	return router
 }

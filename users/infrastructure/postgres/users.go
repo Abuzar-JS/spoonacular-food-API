@@ -84,8 +84,6 @@ type Recipe struct {
 
 func (u UserPostgres) Save(ctx context.Context, request domain.User) (domain.User, error) {
 
-	fmt.Println("hello abuzar")
-
 	user := User{}.FromDomain(request)
 
 	// var existingUser User
@@ -104,4 +102,16 @@ func (u UserPostgres) Save(ctx context.Context, request domain.User) (domain.Use
 
 	return user.ToDomain(), nil
 
+}
+
+func (u UserPostgres) GetAll() ([]domain.User, error) {
+	var users []domain.User
+
+	result := u.db.Order("id").Find(&users)
+
+	if result.Error != nil {
+		return nil, fmt.Errorf("failed to get users: %w", result.Error)
+	}
+
+	return users, nil
 }
