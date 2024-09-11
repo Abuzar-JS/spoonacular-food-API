@@ -84,11 +84,21 @@ type Recipe struct {
 
 func (u UserPostgres) Save(ctx context.Context, request domain.User) (domain.User, error) {
 
+	fmt.Println("hello abuzar")
+
 	user := User{}.FromDomain(request)
+
+	// var existingUser User
+
+	// err := u.db.Where("name = ?", user.Name).First(&existingUser)
+
+	// if err != nil {
+	// 	return domain.User{}, fmt.Errorf("user with name '%s' already exists", user.Name)
+	// }
 
 	result := u.db.Create(&user)
 
-	if result != nil {
+	if result.Error != nil {
 		return domain.User{}, fmt.Errorf("failed to create user")
 	}
 
