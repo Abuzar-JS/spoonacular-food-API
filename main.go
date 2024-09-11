@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"net/http"
 
@@ -21,8 +22,10 @@ func main() {
 	// http.RegisterRoutes(ginRouter, db, validate)
 	userRoutes.RegisterRoutes(ginRouter, db, validate)
 
+	port := os.Getenv("PORT")
+
 	server := &http.Server{
-		Addr:    ":8000",
+		Addr:    fmt.Sprintf(":%s", port),
 		Handler: ginRouter,
 	}
 
