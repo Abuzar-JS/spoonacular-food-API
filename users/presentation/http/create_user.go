@@ -2,9 +2,10 @@ package http
 
 import (
 	"net/http"
+	"strings"
 
-	"github.com/Abuzar-JS/spoonacular-food-API/users/application"
-	"github.com/Abuzar-JS/spoonacular-food-API/users/presentation/models"
+	"github.com/Abuzar-JS/go-spoonacular-api/users/application"
+	"github.com/Abuzar-JS/go-spoonacular-api/users/presentation/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,8 +21,10 @@ func NewCreateUser(
 			return
 		}
 
+		nameLower := strings.ToLower(body.Name)
+
 		request := application.CreateUserRequest{
-			Name:     body.Name,
+			Name:     nameLower,
 			Location: body.Location,
 			Password: body.Password,
 		}

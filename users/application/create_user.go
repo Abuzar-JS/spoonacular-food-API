@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Abuzar-JS/spoonacular-food-API/pkg/helper"
-	"github.com/Abuzar-JS/spoonacular-food-API/users/domain"
-	"github.com/Abuzar-JS/spoonacular-food-API/users/domain/user"
+	"github.com/Abuzar-JS/go-spoonacular-api/pkg/helper"
+	"github.com/Abuzar-JS/go-spoonacular-api/users/domain"
+	"github.com/Abuzar-JS/go-spoonacular-api/users/domain/user"
 )
 
 type CreateUserRequest struct {
@@ -55,9 +55,9 @@ func NewCreateUser(
 
 		userCreated, err := UserRepo.Save(ctx, userRequest)
 		if err != nil {
-			return nil, fmt.Errorf("user creation failed")
-
+			return nil, err
 		}
+
 		return &userCreated, nil
 	}
 }

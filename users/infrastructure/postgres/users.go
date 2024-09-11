@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Abuzar-JS/spoonacular-food-API/users/domain"
+	"github.com/Abuzar-JS/go-spoonacular-api/users/domain"
 
 	"gorm.io/gorm"
 )
@@ -51,9 +51,9 @@ func (u User) FromDomain(ud domain.User) User {
 }
 
 type UserChoice struct {
-	UserID        int `gorm:"primaryKey"`
-	IngredientsID int `gorm:"primaryKey"`
-	IsUserChoice  bool
+	UserID        int         `gorm:"primaryKey;column:user_id"`
+	IngredientsID int         `gorm:"primaryKey;column:ingredients_id"`
+	IsUserChoice  bool        `gorm:"type:boolean;not null;column:is_user_choice"`
 	User          User        `gorm:"foreignKey:UserID;references:ID;constraint:OnDelete:CASCADE"`
 	Ingredient    Ingredients `gorm:"foreignKey:IngredientsID;references:ID;constraint:OnDelete:CASCADE"`
 }
@@ -86,12 +86,32 @@ func (u UserPostgres) Save(ctx context.Context, request domain.User) (domain.Use
 
 	user := User{}.FromDomain(request)
 
+	// var existingUser User
+
+	// err := u.db.Where("name = ?", user.Name).First(&existingUser)
+
+	// if err != nil {
+	// 	return domain.User{}, fmt.Errorf("user with name '%s' already exists", user.Name)
+	// }
+
 	result := u.db.Create(&user)
 
-	if result != nil {
+	if result.Error != nil {
 		return domain.User{}, fmt.Errorf("failed to create user")
 	}
 
 	return user.ToDomain(), nil
 
+}
+
+func (u UserPostgres) GetAll() ([]domain.User, error) {
+	var users []domain.User
+
+	result := u.db.Order("id").Find(&users)
+
+	if result.Error != nil {
+		return nil, fmt.Errorf("failed to get users: %w", result.Error)
+	}
+
+	return users, nil
 }
