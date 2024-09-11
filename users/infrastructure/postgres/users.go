@@ -51,9 +51,9 @@ func (u User) FromDomain(ud domain.User) User {
 }
 
 type UserChoice struct {
-	UserID        int `gorm:"primaryKey"`
-	IngredientsID int `gorm:"primaryKey"`
-	IsUserChoice  bool
+	UserID        int         `gorm:"primaryKey;column:user_id"`
+	IngredientsID int         `gorm:"primaryKey;column:ingredients_id"`
+	IsUserChoice  bool        `gorm:"type:boolean;not null;column:is_user_choice"`
 	User          User        `gorm:"foreignKey:UserID;references:ID;constraint:OnDelete:CASCADE"`
 	Ingredient    Ingredients `gorm:"foreignKey:IngredientsID;references:ID;constraint:OnDelete:CASCADE"`
 }
