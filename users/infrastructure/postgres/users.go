@@ -98,9 +98,8 @@ func (u UserPostgres) Save(ctx context.Context, request domain.User) (domain.Use
 
 func (u UserPostgres) GetUserByID(userID int) (domain.User, error) {
 
-	// var users domain.User
-var user User
-	// result := u.db.First(&users, userID)
+	var user User
+
 	result := u.db.First(&user, userID)
 
 	if result.Error != nil {
