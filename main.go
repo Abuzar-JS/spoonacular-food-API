@@ -7,10 +7,10 @@ import (
 	"net/http"
 
 	"github.com/Abuzar-JS/go-spoonacular-api/config"
-	cuisineRoutes "github.com/Abuzar-JS/go-spoonacular-api/cuisines/presentation/http"
-	dietRoutes "github.com/Abuzar-JS/go-spoonacular-api/diets/presentation/http"
-	intoleranceRoutes "github.com/Abuzar-JS/go-spoonacular-api/intolerances/presentation/http"
-	userRoutes "github.com/Abuzar-JS/go-spoonacular-api/users/presentation/http"
+	cuisineRoutes "github.com/Abuzar-JS/go-spoonacular-api/cuisine/presentation/http"
+	dietRoutes "github.com/Abuzar-JS/go-spoonacular-api/diet/presentation/http"
+	intoleranceRoutes "github.com/Abuzar-JS/go-spoonacular-api/intolerance/presentation/http"
+	userRoutes "github.com/Abuzar-JS/go-spoonacular-api/user/presentation/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
