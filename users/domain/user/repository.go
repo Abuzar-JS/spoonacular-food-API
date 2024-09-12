@@ -13,6 +13,7 @@ type Repository interface {
 
 type ReadRepository interface {
 	GetAll() ([]domain.User, error)
+	GetUserByID(userID int) (domain.User, error)
 }
 
 type WriteRepository interface {

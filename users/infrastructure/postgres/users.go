@@ -22,7 +22,7 @@ func NewUserPostgres(db *gorm.DB) *UserPostgres {
 type User struct {
 	ID       int    `gorm:"primaryKey"`
 	Name     string `gorm:"column:name;not null;unique"`
-	Location string `gorm:"column:location"`
+	Cuisine  string `gorm:"column:cuisine"`
 	Password string `gorm:"column:password"`
 }
 
@@ -36,7 +36,7 @@ func (u User) ToDomain() domain.User {
 	return domain.User{
 		ID:       u.ID,
 		Name:     u.Name,
-		Location: u.Location,
+		Cuisine:  u.Cuisine,
 		Password: u.Password,
 	}
 }
@@ -45,7 +45,7 @@ func (u User) FromDomain(ud domain.User) User {
 	return User{
 		ID:       ud.ID,
 		Name:     ud.Name,
-		Location: ud.Location,
+		Cuisine:  ud.Cuisine,
 		Password: ud.Password,
 	}
 }
@@ -86,14 +86,6 @@ func (u UserPostgres) Save(ctx context.Context, request domain.User) (domain.Use
 
 	user := User{}.FromDomain(request)
 
-	// var existingUser User
-
-	// err := u.db.Where("name = ?", user.Name).First(&existingUser)
-
-	// if err != nil {
-	// 	return domain.User{}, fmt.Errorf("user with name '%s' already exists", user.Name)
-	// }
-
 	result := u.db.Create(&user)
 
 	if result.Error != nil {
@@ -102,6 +94,20 @@ func (u UserPostgres) Save(ctx context.Context, request domain.User) (domain.Use
 
 	return user.ToDomain(), nil
 
+}
+
+func (u UserPostgres) GetUserByID(userID int) (domain.User, error) {
+
+	// var users domain.User
+var user User
+	// result := u.db.First(&users, userID)
+	result := u.db.First(&user, userID)
+
+	if result.Error != nil {
+		return domain.User{}, fmt.Errorf("user with ID %v not found", userID)
+	}
+
+	return user.ToDomain(), nil
 }
 
 func (u UserPostgres) GetAll() ([]domain.User, error) {
