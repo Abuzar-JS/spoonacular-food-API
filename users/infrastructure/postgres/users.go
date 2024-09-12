@@ -96,17 +96,18 @@ func (u UserPostgres) Save(ctx context.Context, request domain.User) (domain.Use
 
 }
 
-func (u UserPostgres) GetUserByID(userID int) (User domain.User, err error) {
+func (u UserPostgres) GetUserByID(userID int) (domain.User, error) {
 
-	var users domain.User
-
-	result := u.db.First(&users, userID)
+	// var users domain.User
+var user User
+	// result := u.db.First(&users, userID)
+	result := u.db.First(&user, userID)
 
 	if result.Error != nil {
-		return users, fmt.Errorf("user with ID %v not found", userID)
+		return domain.User{}, fmt.Errorf("user with ID %v not found", userID)
 	}
 
-	return users, nil
+	return user.ToDomain(), nil
 }
 
 func (u UserPostgres) GetAll() ([]domain.User, error) {
