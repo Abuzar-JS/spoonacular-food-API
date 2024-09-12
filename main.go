@@ -7,7 +7,9 @@ import (
 	"net/http"
 
 	"github.com/Abuzar-JS/go-spoonacular-api/config"
+	dietRoutes "github.com/Abuzar-JS/go-spoonacular-api/diets/presentation/http"
 	userRoutes "github.com/Abuzar-JS/go-spoonacular-api/users/presentation/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
@@ -19,8 +21,9 @@ func main() {
 
 	ginRouter := gin.Default()
 
-	// http.RegisterRoutes(ginRouter, db, validate)
 	userRoutes.RegisterRoutes(ginRouter, db, validate)
+
+	dietRoutes.RegisterRoutes(ginRouter, db, validate)
 
 	port := os.Getenv("PORT")
 
