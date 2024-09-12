@@ -19,10 +19,8 @@ func NewGetUserByID(
 			return nil, err
 		}
 		userResponse := domain.UserResponse{
-			ID:      user.ID,
-			Name:    user.Name,
-			Cuisine: user.Cuisine,
-		}
+			ID:   user.ID,
+			Name: user.Name}
 		return &userResponse, nil
 	}
 }

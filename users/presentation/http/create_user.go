@@ -25,7 +25,6 @@ func NewCreateUser(
 
 		request := application.CreateUserRequest{
 			Name:     nameLower,
-			Cuisine:  body.Cuisine,
 			Password: body.Password,
 		}
 

@@ -22,7 +22,6 @@ func NewUserPostgres(db *gorm.DB) *UserPostgres {
 type User struct {
 	ID       int    `gorm:"primaryKey"`
 	Name     string `gorm:"column:name;not null;unique"`
-	Cuisine  string `gorm:"column:cuisine"`
 	Password string `gorm:"column:password"`
 }
 
@@ -36,7 +35,6 @@ func (u User) ToDomain() domain.User {
 	return domain.User{
 		ID:       u.ID,
 		Name:     u.Name,
-		Cuisine:  u.Cuisine,
 		Password: u.Password,
 	}
 }
@@ -45,41 +43,8 @@ func (u User) FromDomain(ud domain.User) User {
 	return User{
 		ID:       ud.ID,
 		Name:     ud.Name,
-		Cuisine:  ud.Cuisine,
 		Password: ud.Password,
 	}
-}
-
-type UserChoice struct {
-	UserID        int         `gorm:"primaryKey;column:user_id"`
-	IngredientsID int         `gorm:"primaryKey;column:ingredients_id"`
-	IsUserChoice  bool        `gorm:"type:boolean;not null;column:is_user_choice"`
-	User          User        `gorm:"foreignKey:UserID;references:ID;constraint:OnDelete:CASCADE"`
-	Ingredient    Ingredients `gorm:"foreignKey:IngredientsID;references:ID;constraint:OnDelete:CASCADE"`
-}
-
-func (u UserChoice) TableName() string {
-	return "user_choices"
-}
-
-type Ingredients struct {
-	ID int `gorm:"primaryKey"`
-}
-
-type UserMeals struct {
-	UserID   int    `gorm:"primaryKey"`
-	RecipeID int    `gorm:"primaryKey"`
-	MealType string `gorm:"size:50"`
-	User     User   `gorm:"foreignKey:UserID;references:ID;constraint:OnDelete:CASCADE"`
-	Recipe   Recipe `gorm:"foreignKey:RecipeID;references:ID;constraint:OnDelete:CASCADE"`
-}
-
-func (u UserMeals) TableName() string {
-	return "user_meals"
-}
-
-type Recipe struct {
-	ID int `gorm:"primaryKey"`
 }
 
 func (u UserPostgres) Save(ctx context.Context, request domain.User) (domain.User, error) {

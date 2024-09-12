@@ -11,17 +11,12 @@ import (
 
 type CreateUserRequest struct {
 	Name     string
-	Cuisine  string
 	Password string
 }
 
 func (u CreateUserRequest) Validate(ctx context.Context) error {
 	if u.Name == "" {
 		return fmt.Errorf("name cannot be empty")
-	}
-
-	if u.Cuisine == "" {
-		return fmt.Errorf("cuisine cannot be empty")
 	}
 
 	if u.Password == "" {
@@ -49,7 +44,6 @@ func NewCreateUser(
 
 		userRequest := domain.User{
 			Name:     request.Name,
-			Cuisine:  request.Cuisine,
 			Password: hashedPassword,
 		}
 
