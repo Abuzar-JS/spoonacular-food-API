@@ -14,6 +14,7 @@ type UserResponse struct {
 type Recipe struct {
 	ID    int
 	Title string
+	Image string
 }
 
 type Recipes []Recipe
