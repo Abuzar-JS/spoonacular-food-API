@@ -40,6 +40,6 @@ func NewCreateCuisine(
 			return nil, fmt.Errorf("failed to create cuisine")
 		}
 
-		return &cuisineCreated, nil
+		return cuisineCreated, nil
 	}
 }

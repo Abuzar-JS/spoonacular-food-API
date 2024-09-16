@@ -19,3 +19,7 @@ type ReadRepository interface {
 type WriteRepository interface {
 	Save(ctx context.Context, request domain.User) (domain.User, error)
 }
+
+type RecipeRepository interface {
+	GetSpoonacularRecipe(ctx context.Context, cuisine string) (domain.Recipes, error)
+}

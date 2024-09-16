@@ -15,7 +15,7 @@ func NewGetCuisineByID(
 ) GetCuisineByID {
 	return func(ctx context.Context, cuisineID int) (*domain.Cuisine, error) {
 
-		cuisine, err := cuisineRepo.GetCuisineByID(ctx, cuisineID)
+		cuisine, err := cuisineRepo.GetByID(ctx, cuisineID)
 		if err != nil {
 			return nil, fmt.Errorf("cuisine with ID %v not found", cuisineID)
 		}
