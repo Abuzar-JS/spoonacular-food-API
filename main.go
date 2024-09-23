@@ -7,9 +7,7 @@ import (
 	"net/http"
 
 	"github.com/Abuzar-JS/go-spoonacular-api/config"
-	cuisineRoutes "github.com/Abuzar-JS/go-spoonacular-api/cuisine/presentation/http"
-	dietRoutes "github.com/Abuzar-JS/go-spoonacular-api/diet/presentation/http"
-	intoleranceRoutes "github.com/Abuzar-JS/go-spoonacular-api/intolerance/presentation/http"
+	preferenceRoutes "github.com/Abuzar-JS/go-spoonacular-api/preferences/presentation/http"
 	userRoutes "github.com/Abuzar-JS/go-spoonacular-api/user/presentation/http"
 
 	"github.com/gin-gonic/gin"
@@ -25,11 +23,7 @@ func main() {
 
 	userRoutes.RegisterRoutes(ginRouter, db, validate)
 
-	dietRoutes.RegisterRoutes(ginRouter, db, validate)
-
-	cuisineRoutes.RegisterRoutes(ginRouter, db, validate)
-
-	intoleranceRoutes.RegisterRoutes(ginRouter, db, validate)
+	preferenceRoutes.RegisterRoutes(ginRouter, db, validate)
 
 	port := os.Getenv("PORT")
 
