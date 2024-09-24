@@ -3,7 +3,11 @@ package domain
 type UserCuisine struct {
 	UserID    int
 	CuisineID int
-	Cuisine   string
+	Cuisine   Cuisine
+}
+
+type Cuisine struct {
+	Name string
 }
 
 type UserCuisines []UserCuisine

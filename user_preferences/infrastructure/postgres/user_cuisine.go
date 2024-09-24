@@ -18,6 +18,10 @@ func NewUserCuisinePostgres(db *gorm.DB) *UserCuisinePostgres {
 	}
 }
 
+type User struct {
+	ID int `gorm:"column:id"`
+}
+
 type UserCuisineRow struct {
 	UserID    int     `gorm:"column:user_id;primaryKey"`
 	CuisineID int     `gorm:"column:cuisine_id;primaryKey"`
@@ -25,7 +29,7 @@ type UserCuisineRow struct {
 }
 
 type Cuisine struct {
-	ID   int    `gorm:"column:id;primaryKey"`
+	ID   int    `gorm:"column:id;"`
 	Name string `gorm:"column:name;"`
 }
 
@@ -39,6 +43,9 @@ func (u UserCuisineRow) ToDomain() *domain.UserCuisine {
 	return &domain.UserCuisine{
 		UserID:    u.UserID,
 		CuisineID: u.CuisineID,
+		Cuisine: domain.Cuisine{
+			Name: u.Cuisine.Name,
+		},
 	}
 }
 
@@ -60,7 +67,23 @@ func (u UserCuisineRow) FromDomain(ud domain.UserCuisine) UserCuisineRow {
 
 func (u *UserCuisinePostgres) Save(ctx context.Context, request domain.UserCuisine) (*domain.UserCuisine, error) {
 
-	userCuisine := UserCuisineRow.FromDomain(request)
+	// var user User
+
+	// result := u.db.First(&user, request.UserID)
+
+	// if result.Error != nil {
+	// 	return nil, fmt.Errorf("user with ID %v not found", request.UserID)
+	// }
+
+	// var cuisine Cuisine
+
+	// result = u.db.First(&cuisine, request.CuisineID)
+
+	// if result.Error != nil {
+	// 	return nil, fmt.Errorf("cuisine with ID %v not found", request.CuisineID)
+	// }
+
+	userCuisine := UserCuisineRow{}.FromDomain(request)
 
 	if result := u.db.Create(&userCuisine); result.Error != nil {
 		return nil, fmt.Errorf("failed to add user cuisine")
@@ -71,6 +94,15 @@ func (u *UserCuisinePostgres) Save(ctx context.Context, request domain.UserCuisi
 }
 
 func (u *UserCuisinePostgres) GetCuisinesByUserID(ctx context.Context, userID int) (domain.UserCuisines, error) {
+
+	user := UserCuisineRow{UserID: userID}
+
+	result := u.db.First(&user, userID)
+
+	if result.Error != nil {
+		return nil, fmt.Errorf("user with ID %v not found", userID)
+	}
+
 	var userCuisines []UserCuisineRow
 
 	err := u.db.Preload("Cuisine").
