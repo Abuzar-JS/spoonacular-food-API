@@ -67,22 +67,6 @@ func (u UserCuisineRow) FromDomain(ud domain.UserCuisine) UserCuisineRow {
 
 func (u *UserCuisinePostgres) Save(ctx context.Context, request domain.UserCuisine) (*domain.UserCuisine, error) {
 
-	// var user User
-
-	// result := u.db.First(&user, request.UserID)
-
-	// if result.Error != nil {
-	// 	return nil, fmt.Errorf("user with ID %v not found", request.UserID)
-	// }
-
-	// var cuisine Cuisine
-
-	// result = u.db.First(&cuisine, request.CuisineID)
-
-	// if result.Error != nil {
-	// 	return nil, fmt.Errorf("cuisine with ID %v not found", request.CuisineID)
-	// }
-
 	userCuisine := UserCuisineRow{}.FromDomain(request)
 
 	if result := u.db.Create(&userCuisine); result.Error != nil {

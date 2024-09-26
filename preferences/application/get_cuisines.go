@@ -5,17 +5,17 @@ import (
 	"fmt"
 
 	"github.com/Abuzar-JS/go-spoonacular-api/preferences/domain"
-	"github.com/Abuzar-JS/go-spoonacular-api/preferences/domain/cuisine"
+	"github.com/Abuzar-JS/go-spoonacular-api/preferences/domain/preferences"
 )
 
 type GetCuisines func(ctx context.Context) (domain.Cuisines, error)
 
 func NewGetCuisines(
-	CuisineRepo cuisine.Repository,
+	repo preferences.Repository,
 ) GetCuisines {
 	return func(ctx context.Context) (domain.Cuisines, error) {
 
-		allCuisines, err := CuisineRepo.Get(ctx)
+		allCuisines, err := repo.GetCuisines(ctx)
 
 		if err != nil {
 			return nil, fmt.Errorf("failed to get cuisines")

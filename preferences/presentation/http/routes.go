@@ -10,48 +10,37 @@ import (
 
 func RegisterRoutes(router *gin.Engine, database *gorm.DB, validate *validator.Validate) *gin.Engine {
 
-	intoleranceRepo := postgres.NewIntolerancePostgres(database)
-
-	dietRepo := postgres.NewDietPostgres(database)
-
-	cuisineRepo := postgres.NewCuisinePostgres(database)
+	preferencesRepo := postgres.NewPreferencesPostgres(database)
 
 	routes := router.Group("/api")
 
-	routes.POST("/intolerance", NewCreateIntolerance(
-		application.NewCreateIntolerance(intoleranceRepo),
-	))
-
 	routes.GET("/intolerances", NewGetIntolerances(
-		application.NewGetIntolerances(intoleranceRepo),
-	))
-
-	routes.GET("/intolerances/:intolerance_id", NewGetIntoleranceByID(
-		application.NewGetIntoleranceByID(intoleranceRepo),
-	))
-
-	routes.POST("/diet", NewCreateDiet(
-		application.NewCreateDiet(dietRepo),
+		application.NewGetIntolerances(preferencesRepo),
 	))
 
 	routes.GET("/diets", NewGetDiets(
-		application.NewGetDiets(dietRepo),
-	))
-
-	routes.GET("/diets/:diet_id", NewGetDietByID(
-		application.NewGetDietByID(dietRepo),
-	))
-
-	routes.POST("/cuisine", NewCreateCuisine(
-		application.NewCreateCuisine(cuisineRepo),
+		application.NewGetDiets(preferencesRepo),
 	))
 
 	routes.GET("/cuisines", NewGetCuisines(
-		application.NewGetCuisines(cuisineRepo),
+		application.NewGetCuisines(preferencesRepo),
 	))
 
-	routes.GET("/cuisines/:cuisine_id", NewGetCuisineByID(
-		application.NewGetCuisineByID(cuisineRepo),
+	return router
+}
+
+func ReRegisterRoutes(router *gin.Engine, database *gorm.DB, validate *validator.Validate) *gin.Engine {
+
+	userCuisineRepo := postgres.NewUserCuisinePostgres(database)
+
+	routes := router.Group("/api")
+
+	routes.POST("user_cuisine/:user_id/:cuisine_id", NewAddUserCuisine(
+		application.NewCreateUserCuisine(userCuisineRepo),
+	))
+
+	routes.GET("user_cuisine/:user_id", NewGetUserCuisines(
+		application.NewGetCuisinesByUserID(userCuisineRepo),
 	))
 
 	return router

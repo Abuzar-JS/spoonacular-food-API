@@ -5,17 +5,17 @@ import (
 	"fmt"
 
 	"github.com/Abuzar-JS/go-spoonacular-api/preferences/domain"
-	"github.com/Abuzar-JS/go-spoonacular-api/preferences/domain/intolerance"
+	"github.com/Abuzar-JS/go-spoonacular-api/preferences/domain/preferences"
 )
 
 type GetIntolerances func(ctx context.Context) ([]domain.Intolerance, error)
 
 func NewGetIntolerances(
-	IntoleranceRepo intolerance.Repository,
+	repo preferences.Repository,
 ) GetIntolerances {
 	return func(ctx context.Context) ([]domain.Intolerance, error) {
 
-		result, err := IntoleranceRepo.GetAll(ctx)
+		result, err := repo.GetIntolerances(ctx)
 
 		if err != nil {
 			return nil, fmt.Errorf("failed to get intolerances")
