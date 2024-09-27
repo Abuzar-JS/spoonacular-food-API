@@ -14,6 +14,10 @@ func RegisterRoutes(router *gin.Engine, database *gorm.DB, validate *validator.V
 
 	routes := router.Group("/api")
 
+	routes.POST("/user_preferences", NewAddUserPreferences(
+		application.NewAddUserPreferences(preferencesRepo),
+	))
+
 	routes.GET("/intolerances", NewGetIntolerances(
 		application.NewGetIntolerances(preferencesRepo),
 	))
@@ -24,23 +28,6 @@ func RegisterRoutes(router *gin.Engine, database *gorm.DB, validate *validator.V
 
 	routes.GET("/cuisines", NewGetCuisines(
 		application.NewGetCuisines(preferencesRepo),
-	))
-
-	return router
-}
-
-func ReRegisterRoutes(router *gin.Engine, database *gorm.DB, validate *validator.Validate) *gin.Engine {
-
-	userCuisineRepo := postgres.NewUserCuisinePostgres(database)
-
-	routes := router.Group("/api")
-
-	routes.POST("user_cuisine/:user_id/:cuisine_id", NewAddUserCuisine(
-		application.NewCreateUserCuisine(userCuisineRepo),
-	))
-
-	routes.GET("user_cuisine/:user_id", NewGetUserCuisines(
-		application.NewGetCuisinesByUserID(userCuisineRepo),
 	))
 
 	return router

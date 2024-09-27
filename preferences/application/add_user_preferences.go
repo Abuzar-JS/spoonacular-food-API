@@ -21,56 +21,44 @@ type AddUserPreferencesResponse struct {
 	UserIntolerances domain.UserIntolerances
 }
 
-type AddUserPreferences func(ctx context.Context, request AddUserPreferencesRequest) (AddUserPreferencesResponse, error)
+type AddUserPreferences func(ctx context.Context, request AddUserPreferencesRequest) (*AddUserPreferencesResponse, error)
 
-func NewSaveUserPreferences(
+func NewAddUserPreferences(
 	repo preferences.Repository,
 ) AddUserPreferences {
-	return func(ctx context.Context, request AddUserPreferencesRequest) (AddUserPreferencesResponse, error) {
+	return func(ctx context.Context, request AddUserPreferencesRequest) (*AddUserPreferencesResponse, error) {
 
-		var response AddUserPreferencesResponse
-
-		cuisines := make(domain.UserCuisines, len(request.Cuisines))
-		for i, cuisineID := range request.Cuisines {
-			cuisines[i] = domain.UserCuisine{
-				UserID:    request.UserID,
-				CuisineID: cuisineID,
+		var userCuisines domain.UserCuisines
+		for _, cuisineID := range request.Cuisines {
+			userCuisine, err := repo.SaveUserCuisine(ctx, request.UserID, cuisineID)
+			if err != nil {
+				return nil, fmt.Errorf("failed to save user cuisine: %v", err)
 			}
+			userCuisines = append(userCuisines, *userCuisine)
 		}
-		userCuisines, err := repo.SaveUserCuisines(ctx, cuisines)
-		if err != nil {
-			return AddUserPreferencesResponse{}, fmt.Errorf("failed to save user cuisines: %v", err)
-		}
-		response.UserCuisines = userCuisines
 
-		diets := make(domain.UserDiets, len(request.Diets))
-		for i, dietID := range request.Diets {
-			diets[i] = domain.UserDiet{
-				UserID: request.UserID,
-				DietID: dietID,
+		var userDiets domain.UserDiets
+		for _, dietID := range request.Diets {
+			userDiet, err := repo.SaveUserDiet(ctx, request.UserID, dietID)
+			if err != nil {
+				return nil, fmt.Errorf("failed to save user diet: %v", err)
 			}
-		}
-		userDiets, err := repo.SaveUserDiets(ctx, diets)
-		if err != nil {
-			return AddUserPreferencesResponse{}, fmt.Errorf("failed to save user diets: %v", err)
+			userDiets = append(userDiets, *userDiet)
 		}
 
-		response.UserDiets = userDiets
-
-		intolerances := make(domain.UserIntolerances, len(request.Intolerances))
-		for i, intoleranceID := range request.Intolerances {
-			intolerances[i] = domain.UserIntolerance{
-				UserID:        request.UserID,
-				IntoleranceID: intoleranceID,
+		var userIntolerances domain.UserIntolerances
+		for _, intoleranceID := range request.Intolerances {
+			userIntolerance, err := repo.SaveUserIntolerance(ctx, request.UserID, intoleranceID)
+			if err != nil {
+				return nil, fmt.Errorf("failed to save user intolerance: %v", err)
 			}
+			userIntolerances = append(userIntolerances, *userIntolerance)
 		}
 
-		userIntolerances, err := repo.SaveUserIntolerances(ctx, intolerances)
-		if err != nil {
-			return AddUserPreferencesResponse{}, fmt.Errorf("failed to save user intolerances: %v", err)
-		}
-		response.UserIntolerances = userIntolerances
-
-		return response, nil
+		return &AddUserPreferencesResponse{
+			UserCuisines:     userCuisines,
+			UserDiets:        userDiets,
+			UserIntolerances: userIntolerances,
+		}, nil
 	}
 }

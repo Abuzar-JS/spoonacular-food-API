@@ -27,7 +27,7 @@ func NewAddUserPreferences(
 			Intolerances: body.IntoleranceID,
 		}
 
-		err = service(ctx, request)
+		preferences, err := service(ctx, request)
 
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, returnError(err))
@@ -35,7 +35,8 @@ func NewAddUserPreferences(
 		}
 
 		ctx.JSON(http.StatusOK, gin.H{
-			"message": "cuisine added to user successfully",
+			"message":     "preferences saved successfully",
+			"preferences": preferences,
 		})
 	}
 }

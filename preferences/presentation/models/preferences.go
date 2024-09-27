@@ -13,7 +13,7 @@ type CreateDietRequest struct {
 }
 
 type AddUserPreferencesRequest struct {
-	UserID        int   `json:"user_id"`
+	UserID        int   `json:"user_ID"`
 	CuisineID     []int `json:"cuisines"`
 	IntoleranceID []int `json:"intolerances"`
 	DietID        []int `json:"diets"`

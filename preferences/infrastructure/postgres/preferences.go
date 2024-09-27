@@ -124,7 +124,7 @@ func (u *UserIntoleranceRow) toDomain() *domain.UserIntolerance {
 	}
 }
 
-func (u *UserIntoleranceRows) toDomain() domain.UserIntolerances {
+func (u UserIntoleranceRows) toDomain() domain.UserIntolerances {
 	intolerances := make(domain.UserIntolerances, len(u))
 	for i, intolerance := range u {
 		intolerances[i] = *intolerance.toDomain()
@@ -231,59 +231,45 @@ func (u PreferencesPostgres) GetCuisines(ctx context.Context) (domain.Cuisines, 
 	return cuisines.toDomain(), nil
 }
 
-func (u *PreferencesPostgres) SaveUserIntolerances(ctx context.Context, intolerances domain.UserIntolerances) (domain.UserIntolerances, error) {
-	var intoleranceRows UserIntoleranceRows
-
-	for _, intolerance := range intolerances {
-		intoleranceRow := UserIntoleranceRow{}.fromDomain(intolerance)
-		intoleranceRows = append(intoleranceRows, intoleranceRow)
+func (u *PreferencesPostgres) SaveUserDiet(ctx context.Context, userID int, dietID int) (*domain.UserDiet, error) {
+	diet := domain.UserDiet{
+		UserID: userID,
+		DietID: dietID,
 	}
 
-	if err := u.db.Create(&intoleranceRows).Error; err != nil {
-		return nil, fmt.Errorf("failed to save user intolerances: %v", err)
-	}
+	dietRow := UserDietRow{}.fromDomain(diet)
 
-	return UserIntoleranceRows(intoleranceRows).toDomain(), nil
-}
-
-func (u *PreferencesPostgres) SaveUserDiets(ctx context.Context, diets domain.UserDiets) (domain.UserDiets, error) {
-	var dietRows UserDietRows
-
-	for _, diet := range diets {
-		dietRow := UserDietRow{}.fromDomain(diet)
-		dietRows = append(dietRows, dietRow)
-	}
-
-	if err := u.db.Create(&dietRows).Error; err != nil {
+	if err := u.db.Create(&dietRow).Error; err != nil {
 		return nil, fmt.Errorf("failed to save user diets: %v", err)
 	}
 
-	return UserDietRows(dietRows).toDomain(), nil
+	return UserDietRow(dietRow).toDomain(), nil
 }
 
-func (u *PreferencesPostgres) SaveUserCuisines(ctx context.Context, cuisines domain.UserCuisines) (domain.UserCuisines, error) {
-	var cuisineRows UserCuisineRows
+func (u *PreferencesPostgres) SaveUserCuisine(ctx context.Context, userID int, cuisineID int) (*domain.UserCuisine, error) {
+	cuisine := domain.UserCuisine{
+		UserID:    userID,
+		CuisineID: cuisineID,
+	}
+	cuisineRow := UserCuisineRow{}.fromDomain(cuisine)
 
-	for _, cuisine := range cuisines {
-		cuisineRow := UserCuisineRow{}.fromDomain(cuisine)
-		cuisineRows = append(cuisineRows, cuisineRow)
+	if err := u.db.Create(&cuisineRow).Error; err != nil {
+		return nil, fmt.Errorf("failed to save user cuisine: %v", err)
 	}
 
-	if err := u.db.Create(&cuisineRows).Error; err != nil {
-		return nil, fmt.Errorf("failed to save user cuisines: %v", err)
-	}
-
-	return UserCuisineRows(cuisineRows).toDomain(), nil
+	return cuisineRow.toDomain(), nil
 }
 
-func (u *PreferencesPostgres) SaveUserIntolerance(ctx context.Context, userID int, intoleranceID int) (*domain.UserIntolerances, error) {
-	intoleranceRow := UserIntoleranceRow{
+func (u *PreferencesPostgres) SaveUserIntolerance(ctx context.Context, userID int, intoleranceID int) (*domain.UserIntolerance, error) {
+	intolerance := domain.UserIntolerance{
 		UserID:        userID,
 		IntoleranceID: intoleranceID,
 	}
+	intoleranceRow := UserIntoleranceRow{}.fromDomain(intolerance)
 
 	if err := u.db.Create(&intoleranceRow).Error; err != nil {
 		return nil, fmt.Errorf("failed to save user intolerance: %v", err)
 	}
-	return into, nil
+
+	return intoleranceRow.toDomain(), nil
 }

@@ -13,12 +13,12 @@ type Repository interface {
 
 type ReadRepository interface {
 	GetCuisines(ctx context.Context) (domain.Cuisines, error)
-	GetIntolerances(ctx context.Context) ([]domain.Intolerance, error)
-	GetDiets(ctx context.Context) ([]domain.Diet, error)
+	GetIntolerances(ctx context.Context) (domain.Intolerances, error)
+	GetDiets(ctx context.Context) (domain.Diets, error)
 }
 
 type WriteRepository interface {
-	SaveUserCuisines(ctx context.Context, cuisines domain.UserCuisines) (domain.UserCuisines, error)
-	SaveUserDiets(ctx context.Context, diets domain.UserDiets) (domain.UserDiets, error)
-	SaveUserIntolerances(ctx context.Context, intolerances domain.UserIntolerances) (domain.UserIntolerances, error)
+	SaveUserDiet(ctx context.Context, userID int, dietID int) (*domain.UserDiet, error)
+	SaveUserCuisine(ctx context.Context, userID int, cuisineID int) (*domain.UserCuisine, error)
+	SaveUserIntolerance(ctx context.Context, userID int, intoleranceID int) (*domain.UserIntolerance, error)
 }
