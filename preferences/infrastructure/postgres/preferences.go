@@ -231,7 +231,62 @@ func (u PreferencesPostgres) GetCuisines(ctx context.Context) (domain.Cuisines, 
 	return cuisines.toDomain(), nil
 }
 
-func (u *PreferencesPostgres) SaveUserDiet(ctx context.Context, userID int, dietID int) (*domain.UserDiet, error) {
+// func (u *PreferencesPostgres) SaveUserDiet(ctx context.Context, userID int, dietID int) (*domain.UserDiet, error) {
+// 	diet := domain.UserDiet{
+// 		UserID: userID,
+// 		DietID: dietID,
+// 	}
+
+// 	dietRow := UserDietRow{}.fromDomain(diet)
+
+// 	if err := u.db.Create(&dietRow).Error; err != nil {
+// 		return nil, fmt.Errorf("failed to save user diets: %v", err)
+// 	}
+
+// 	return UserDietRow(dietRow).toDomain(), nil
+// }
+
+// func (u *PreferencesPostgres) SaveUserCuisine(ctx context.Context, userID int, cuisineID int) (*domain.UserCuisine, error) {
+// 	cuisine := domain.UserCuisine{
+// 		UserID:    userID,
+// 		CuisineID: cuisineID,
+// 	}
+// 	cuisineRow := UserCuisineRow{}.fromDomain(cuisine)
+
+// 	if err := u.db.Create(&cuisineRow).Error; err != nil {
+// 		return nil, fmt.Errorf("failed to save user cuisine: %v", err)
+// 	}
+
+// 	return cuisineRow.toDomain(), nil
+// }
+
+// func (u *PreferencesPostgres) SaveUserIntolerance(ctx context.Context, userID int, intoleranceID int) (*domain.UserIntolerance, error) {
+// 	intolerance := domain.UserIntolerance{
+// 		UserID:        userID,
+// 		IntoleranceID: intoleranceID,
+// 	}
+// 	intoleranceRow := UserIntoleranceRow{}.fromDomain(intolerance)
+
+// 	if err := u.db.Create(&intoleranceRow).Error; err != nil {
+// 		return nil, fmt.Errorf("failed to save user intolerance: %v", err)
+// 	}
+
+// 	return intoleranceRow.toDomain(), nil
+// }
+
+// StartTransaction starts a new database transaction
+func (u *PreferencesPostgres) StartTransaction() (*gorm.DB, error) {
+	tx := u.db.Begin()
+	if tx.Error != nil {
+		return nil, fmt.Errorf("failed to start transaction: %w", tx.Error)
+	}
+	return tx, nil
+}
+
+// existing code for IntoleranceRow, DietRow, CuisineRow, etc. remains unchanged
+
+// Modify SaveUserDiet, SaveUserCuisine, and SaveUserIntolerance to accept a transaction
+func (u *PreferencesPostgres) SaveUserDiet(ctx context.Context, tx *gorm.DB, userID int, dietID int) (*domain.UserDiet, error) {
 	diet := domain.UserDiet{
 		UserID: userID,
 		DietID: dietID,
@@ -239,35 +294,35 @@ func (u *PreferencesPostgres) SaveUserDiet(ctx context.Context, userID int, diet
 
 	dietRow := UserDietRow{}.fromDomain(diet)
 
-	if err := u.db.Create(&dietRow).Error; err != nil {
+	if err := tx.Create(&dietRow).Error; err != nil {
 		return nil, fmt.Errorf("failed to save user diets: %v", err)
 	}
 
 	return UserDietRow(dietRow).toDomain(), nil
 }
 
-func (u *PreferencesPostgres) SaveUserCuisine(ctx context.Context, userID int, cuisineID int) (*domain.UserCuisine, error) {
+func (u *PreferencesPostgres) SaveUserCuisine(ctx context.Context, tx *gorm.DB, userID int, cuisineID int) (*domain.UserCuisine, error) {
 	cuisine := domain.UserCuisine{
 		UserID:    userID,
 		CuisineID: cuisineID,
 	}
 	cuisineRow := UserCuisineRow{}.fromDomain(cuisine)
 
-	if err := u.db.Create(&cuisineRow).Error; err != nil {
+	if err := tx.Create(&cuisineRow).Error; err != nil {
 		return nil, fmt.Errorf("failed to save user cuisine: %v", err)
 	}
 
 	return cuisineRow.toDomain(), nil
 }
 
-func (u *PreferencesPostgres) SaveUserIntolerance(ctx context.Context, userID int, intoleranceID int) (*domain.UserIntolerance, error) {
+func (u *PreferencesPostgres) SaveUserIntolerance(ctx context.Context, tx *gorm.DB, userID int, intoleranceID int) (*domain.UserIntolerance, error) {
 	intolerance := domain.UserIntolerance{
 		UserID:        userID,
 		IntoleranceID: intoleranceID,
 	}
 	intoleranceRow := UserIntoleranceRow{}.fromDomain(intolerance)
 
-	if err := u.db.Create(&intoleranceRow).Error; err != nil {
+	if err := tx.Create(&intoleranceRow).Error; err != nil {
 		return nil, fmt.Errorf("failed to save user intolerance: %v", err)
 	}
 
