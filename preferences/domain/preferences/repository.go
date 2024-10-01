@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/Abuzar-JS/go-spoonacular-api/preferences/domain"
-	"gorm.io/gorm"
 )
 
 type Repository interface {
@@ -19,9 +18,5 @@ type ReadRepository interface {
 }
 
 type WriteRepository interface {
-	SaveUserDiet(ctx context.Context, tx *gorm.DB, userID int, dietID int) (*domain.UserDiet, error)
-	SaveUserCuisine(ctx context.Context, tx *gorm.DB, userID int, cuisineID int) (*domain.UserCuisine, error)
-	SaveUserIntolerance(ctx context.Context, tx *gorm.DB, userID int, intoleranceID int) (*domain.UserIntolerance, error)
-	StartTransaction() (*gorm.DB, error)
-	// SaveUserPreferences(ctx context.Context, userID, dietID, cuisineID, intoleranceID int) error
+	SaveUserPreferences(ctx context.Context, userID int, cuisineIDs, dietIDs, intoleranceIDs []int) (*domain.UserPreferences, error)
 }

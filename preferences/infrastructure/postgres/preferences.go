@@ -231,50 +231,6 @@ func (u PreferencesPostgres) GetCuisines(ctx context.Context) (domain.Cuisines, 
 	return cuisines.toDomain(), nil
 }
 
-// func (u *PreferencesPostgres) SaveUserDiet(ctx context.Context, userID int, dietID int) (*domain.UserDiet, error) {
-// 	diet := domain.UserDiet{
-// 		UserID: userID,
-// 		DietID: dietID,
-// 	}
-
-// 	dietRow := UserDietRow{}.fromDomain(diet)
-
-// 	if err := u.db.Create(&dietRow).Error; err != nil {
-// 		return nil, fmt.Errorf("failed to save user diets: %v", err)
-// 	}
-
-// 	return UserDietRow(dietRow).toDomain(), nil
-// }
-
-// func (u *PreferencesPostgres) SaveUserCuisine(ctx context.Context, userID int, cuisineID int) (*domain.UserCuisine, error) {
-// 	cuisine := domain.UserCuisine{
-// 		UserID:    userID,
-// 		CuisineID: cuisineID,
-// 	}
-// 	cuisineRow := UserCuisineRow{}.fromDomain(cuisine)
-
-// 	if err := u.db.Create(&cuisineRow).Error; err != nil {
-// 		return nil, fmt.Errorf("failed to save user cuisine: %v", err)
-// 	}
-
-// 	return cuisineRow.toDomain(), nil
-// }
-
-// func (u *PreferencesPostgres) SaveUserIntolerance(ctx context.Context, userID int, intoleranceID int) (*domain.UserIntolerance, error) {
-// 	intolerance := domain.UserIntolerance{
-// 		UserID:        userID,
-// 		IntoleranceID: intoleranceID,
-// 	}
-// 	intoleranceRow := UserIntoleranceRow{}.fromDomain(intolerance)
-
-// 	if err := u.db.Create(&intoleranceRow).Error; err != nil {
-// 		return nil, fmt.Errorf("failed to save user intolerance: %v", err)
-// 	}
-
-// 	return intoleranceRow.toDomain(), nil
-// }
-
-// StartTransaction starts a new database transaction
 func (u *PreferencesPostgres) StartTransaction() (*gorm.DB, error) {
 	tx := u.db.Begin()
 	if tx.Error != nil {
@@ -283,10 +239,7 @@ func (u *PreferencesPostgres) StartTransaction() (*gorm.DB, error) {
 	return tx, nil
 }
 
-// existing code for IntoleranceRow, DietRow, CuisineRow, etc. remains unchanged
-
-// Modify SaveUserDiet, SaveUserCuisine, and SaveUserIntolerance to accept a transaction
-func (u *PreferencesPostgres) SaveUserDiet(ctx context.Context, tx *gorm.DB, userID int, dietID int) (*domain.UserDiet, error) {
+func (u *PreferencesPostgres) saveUserDiet(ctx context.Context, tx *gorm.DB, userID int, dietID int) (*domain.UserDiet, error) {
 	diet := domain.UserDiet{
 		UserID: userID,
 		DietID: dietID,
@@ -301,7 +254,7 @@ func (u *PreferencesPostgres) SaveUserDiet(ctx context.Context, tx *gorm.DB, use
 	return UserDietRow(dietRow).toDomain(), nil
 }
 
-func (u *PreferencesPostgres) SaveUserCuisine(ctx context.Context, tx *gorm.DB, userID int, cuisineID int) (*domain.UserCuisine, error) {
+func (u *PreferencesPostgres) saveUserCuisine(ctx context.Context, tx *gorm.DB, userID int, cuisineID int) (*domain.UserCuisine, error) {
 	cuisine := domain.UserCuisine{
 		UserID:    userID,
 		CuisineID: cuisineID,
@@ -315,11 +268,12 @@ func (u *PreferencesPostgres) SaveUserCuisine(ctx context.Context, tx *gorm.DB, 
 	return cuisineRow.toDomain(), nil
 }
 
-func (u *PreferencesPostgres) SaveUserIntolerance(ctx context.Context, tx *gorm.DB, userID int, intoleranceID int) (*domain.UserIntolerance, error) {
+func (u *PreferencesPostgres) saveUserIntolerance(ctx context.Context, tx *gorm.DB, userID int, intoleranceID int) (*domain.UserIntolerance, error) {
 	intolerance := domain.UserIntolerance{
 		UserID:        userID,
 		IntoleranceID: intoleranceID,
 	}
+
 	intoleranceRow := UserIntoleranceRow{}.fromDomain(intolerance)
 
 	if err := tx.Create(&intoleranceRow).Error; err != nil {
@@ -327,4 +281,46 @@ func (u *PreferencesPostgres) SaveUserIntolerance(ctx context.Context, tx *gorm.
 	}
 
 	return intoleranceRow.toDomain(), nil
+}
+
+func (u *PreferencesPostgres) SaveUserPreferences(ctx context.Context, userID int, cuisineIDs, dietIDs, intoleranceIDs []int) (*domain.UserPreferences, error) {
+	var userPreferences domain.UserPreferences
+
+	tx := u.db.Begin()
+	if tx.Error != nil {
+		return nil, fmt.Errorf("failed to start transaction: %v", tx.Error)
+	}
+
+	for _, cuisineID := range cuisineIDs {
+		cuisine, err := u.saveUserCuisine(ctx, tx, userID, cuisineID)
+		if err != nil {
+			tx.Rollback()
+			return nil, fmt.Errorf("failed to save user cuisine: %v", err)
+		}
+		userPreferences.UserCuisines = append(userPreferences.UserCuisines, *cuisine)
+	}
+
+	for _, dietID := range dietIDs {
+		diet, err := u.saveUserDiet(ctx, tx, userID, dietID)
+		if err != nil {
+			tx.Rollback()
+			return nil, fmt.Errorf("failed to save user diet: %v", err)
+		}
+		userPreferences.UserDiets = append(userPreferences.UserDiets, *diet)
+	}
+
+	for _, intoleranceID := range intoleranceIDs {
+		intolerance, err := u.saveUserIntolerance(ctx, tx, userID, intoleranceID)
+		if err != nil {
+			tx.Rollback()
+			return nil, fmt.Errorf("failed to save user intolerance: %v", err)
+		}
+		userPreferences.UserIntolerances = append(userPreferences.UserIntolerances, *intolerance)
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fmt.Errorf("failed to commit transaction: %v", err)
+	}
+
+	return &userPreferences, nil
 }

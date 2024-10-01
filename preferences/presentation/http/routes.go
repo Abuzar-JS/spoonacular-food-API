@@ -14,10 +14,6 @@ func RegisterRoutes(router *gin.Engine, database *gorm.DB, validate *validator.V
 
 	routes := router.Group("/api")
 
-	// routes.POST("/user_preferences", NewAddUserPreferences(
-	// 	application.NewAddUserPreferences(preferencesRepo),
-	// ))
-
 	routes.POST("/user_preferences", NewAddUserPreferences(
 		application.NewAddUserPreferences(preferencesRepo),
 	))

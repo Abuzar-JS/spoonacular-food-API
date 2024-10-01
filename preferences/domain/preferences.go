@@ -1,5 +1,12 @@
 package domain
 
+type UserPreferences struct {
+	UserID           int
+	UserCuisines     UserCuisines
+	UserDiets        UserDiets
+	UserIntolerances UserIntolerances
+}
+
 type Intolerance struct {
 	ID   int
 	Name string
