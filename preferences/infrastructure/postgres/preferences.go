@@ -231,14 +231,6 @@ func (u PreferencesPostgres) GetCuisines(ctx context.Context) (domain.Cuisines, 
 	return cuisines.toDomain(), nil
 }
 
-func (u *PreferencesPostgres) StartTransaction() (*gorm.DB, error) {
-	tx := u.db.Begin()
-	if tx.Error != nil {
-		return nil, fmt.Errorf("failed to start transaction: %w", tx.Error)
-	}
-	return tx, nil
-}
-
 func (u *PreferencesPostgres) saveUserDiet(ctx context.Context, tx *gorm.DB, userID int, dietID int) (*domain.UserDiet, error) {
 	diet := domain.UserDiet{
 		UserID: userID,
