@@ -13,13 +13,13 @@ import (
 type SpoonacularClient struct {
 }
 
-type Recipe struct {
+type RecipeRow struct {
 	ID    int    `json:"id"`
 	Title string `json:"title"`
 	Image string `json:"image"`
 }
 
-func (u Recipe) ToDomain() *domain.Recipe {
+func (u RecipeRow) ToDomain() *domain.Recipe {
 	return &domain.Recipe{
 		ID:    u.ID,
 		Title: u.Title,
@@ -27,7 +27,7 @@ func (u Recipe) ToDomain() *domain.Recipe {
 	}
 }
 
-type RecipeRows []Recipe
+type RecipeRows []RecipeRow
 
 func (r RecipeRows) ToDomain() domain.Recipes {
 	recipes := make(domain.Recipes, len(r))
@@ -54,11 +54,11 @@ func (s *SpoonacularClient) GetSpoonacularRecipe(ctx context.Context, cuisine st
 	}
 
 	var response struct {
-		Recipes []Recipe `json:"results"`
+		Recipes []RecipeRow `json:"results"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return nil, fmt.Errorf("error: ", err)
+		return nil, fmt.Errorf("failed to decode JSON response %w ", err)
 	}
 
 	return RecipeRows(response.Recipes).ToDomain(), nil
