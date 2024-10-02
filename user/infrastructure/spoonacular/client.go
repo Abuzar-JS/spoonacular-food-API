@@ -58,7 +58,7 @@ func (s *SpoonacularClient) GetSpoonacularRecipe(ctx context.Context, cuisine st
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to decode JSON response %w ", err)
 	}
 
 	return RecipeRows(response.Recipes).ToDomain(), nil

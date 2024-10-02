@@ -9,7 +9,6 @@ import (
 	"github.com/Abuzar-JS/go-spoonacular-api/config"
 	preferenceRoutes "github.com/Abuzar-JS/go-spoonacular-api/preferences/presentation/http"
 	userRoutes "github.com/Abuzar-JS/go-spoonacular-api/user/presentation/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )

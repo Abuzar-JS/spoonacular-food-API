@@ -5,17 +5,17 @@ import (
 	"fmt"
 
 	"github.com/Abuzar-JS/go-spoonacular-api/preferences/domain"
-	"github.com/Abuzar-JS/go-spoonacular-api/preferences/domain/diet"
+	"github.com/Abuzar-JS/go-spoonacular-api/preferences/domain/preferences"
 )
 
 type GetDiets func(ctx context.Context) ([]domain.Diet, error)
 
 func NewGetDiets(
-	DietRepo diet.Repository,
+	repo preferences.Repository,
 ) GetDiets {
 	return func(ctx context.Context) ([]domain.Diet, error) {
 
-		result, err := DietRepo.GetAll(ctx)
+		result, err := repo.GetDiets(ctx)
 
 		if err != nil {
 			return nil, fmt.Errorf("failed to get diets")
